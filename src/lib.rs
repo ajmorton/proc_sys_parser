@@ -156,6 +156,7 @@ ProcMemInfo {
     filepmdmapped: 0,
     cmatotal: 32768,
     cmafree: 31232,
+    balloon: Some(0),
     hugepages_total: 0,
     hugepages_free: 0,
     hugepages_rsvd: 0,

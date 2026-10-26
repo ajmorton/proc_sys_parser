@@ -64,6 +64,7 @@ ProcMemInfo {
     filepmdmapped: 0,
     cmatotal: 32768,
     cmafree: 31232,
+    balloon: Some(0),
     hugepages_total: 0,
     hugepages_free: 0,
     hugepages_rsvd: 0,
@@ -138,6 +139,8 @@ pub struct ProcMemInfo {
     pub filepmdmapped: u64,
     pub cmatotal: u64,
     pub cmafree: u64,
+    /// Kernel 6.15+.
+    pub balloon: Option<u64>,
     pub hugepages_total: u64,
     pub hugepages_free: u64,
     pub hugepages_rsvd: u64,
@@ -336,6 +339,11 @@ impl ProcMemInfo {
                 line if line.starts_with("CmaFree:") => {
                     procmeminfo.cmafree = ProcMemInfo::parse_proc_meminfo_line(line)?
                 }
+                // Kernel 6.15+
+                line if line.starts_with("Balloon:") => {
+                    procmeminfo.balloon = Some(ProcMemInfo::parse_proc_meminfo_line(line)?)
+                }
+                }
                 line if line.starts_with("HugePages_Total:") => {
                     procmeminfo.hugepages_total = ProcMemInfo::parse_proc_meminfo_line(line)?
                 }
@@ -445,6 +453,7 @@ FileHugePages:         0 kB
 FilePmdMapped:         0 kB
 CmaTotal:          32768 kB
 CmaFree:           31232 kB
+Balloon:            4096 kB
 HugePages_Total:       0
 HugePages_Free:        0
 HugePages_Rsvd:        0
@@ -503,6 +512,7 @@ Hugetlb:               0 kB";
                 filepmdmapped: 0,
                 cmatotal: 32768,
                 cmafree: 31232,
+                balloon: Some(4096),
                 hugepages_total: 0,
                 hugepages_free: 0,
                 hugepages_rsvd: 0,
@@ -565,6 +575,7 @@ FileHugePages:         0 kB
 FilePmdMapped:         0 kB
 CmaTotal:          32768 kB
 CmaFree:           31232 kB
+Balloon:            4096 kB
 HugePages_Total:       0
 HugePages_Free:        0
 HugePages_Rsvd:        0
@@ -636,6 +647,7 @@ Hugetlb:               0 kB";
                 filepmdmapped: 0,
                 cmatotal: 32768,
                 cmafree: 31232,
+                balloon: Some(4096),
                 hugepages_total: 0,
                 hugepages_free: 0,
                 hugepages_rsvd: 0,
